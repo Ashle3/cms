@@ -1,1 +1,49 @@
-<p>contact-list works!</p>
+<!-- <div class="row">
+    <div class="col-xs-12">
+        <h2 class="panel pull-left" style="padding-top: 7.5px; font-size: 25px;"><strong>Contacts</strong></h2>
+        <button class="btn btn-success">
+            New Contact
+        </button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <a href="#" class="list-group-item clearfix">
+            <div class="pull-left">
+                <h4 class="list-group-item-heading">Contact Name</h4>
+                <p class="list-group-item-text">Contact Info</p>
+            </div>
+            <span class="pull-right">
+                <img src="" alt="" class="img-responsive" style="max-height: 50px;">
+            </span>
+        </a>
+    </div>
+</div> -->
+
+<!-- <div class="row">
+    <div class="col-xs-12">
+    <div class="panel-heading clearfix">
+        <h2 class="panel pull-left" style="padding-top: 7.5px; font-size: 25px;"><strong>Contacts</strong></h2>
+        <button class="btn btn-success pull-right">New Contact</button>
+    </div>
+    </div>
+</div> -->
+
+<div class="panel-heading clearfix">
+<h2 class="panel pull-left" style="padding-top: 7.5px; font-size: 25px;"><strong>Contacts</strong></h2>
+<a href="#"><button class="btn btn-success pull-right">New Contact</button></a>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <a href="#" class="list-group-item clearfix" *ngFor="let contact of contacts">
+            <div class="pull-left">
+                <h4 class="list-group-item-heading">{{ contact.name }}</h4>
+                <!-- <p class="list-group-item-text">{{ contact.imageURL }}</p> -->
+            </div>
+            <span class="pull-right">
+                <img [src]="contact.imageURL" alt="{{ contact.name }}" class="img-responsive" style="max-height: 100px;">
+            </span>
+        </a>
+    </div>
+</div>
