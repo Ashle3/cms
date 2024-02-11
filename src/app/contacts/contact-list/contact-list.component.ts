@@ -12,10 +12,9 @@ export class ContactListComponent implements OnInit{
 
   constructor(private contactService: ContactService){}
 
-  @Output() selectedContactEvent = new EventEmitter<Contact>();
-
+  
   onSelected(contact: Contact) {
-    this.selectedContactEvent.emit(contact);
+    this.contactService.contactSelectedEvent.emit(contact);
   }
 
   ngOnInit(){

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Contact } from './contact.model';
 import { MOCKCONTACTS } from './MOCKCONTACTS';
 
@@ -7,6 +7,7 @@ import { MOCKCONTACTS } from './MOCKCONTACTS';
 })
 
 export class ContactService {
+  contactSelectedEvent = new EventEmitter<Contact>();
   private contacts: Contact[] = [];
 
   constructor() { 
@@ -20,4 +21,6 @@ export class ContactService {
   getContact(id: string): Contact{
     return this.contacts.find((c) => c.id === id);
   }
+
+  
 }
