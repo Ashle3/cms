@@ -36,8 +36,14 @@
     
     <div class="row">
         <div class="col-xs-12">
-            <app-contact-item
-            *ngFor="let contact of contacts"
-            [contact]="contact"></app-contact-item>
+            <div cdkDropList
+                [cdkDropListData]="contacts">
+                <div cdkDrag
+                *ngFor="let contact of contacts"
+                [cdkDragData]="contact">
+                    <app-contact-item
+                    [contact]="contact"></app-contact-item>
+                </div>
+            </div>
         </div>
     </div>
