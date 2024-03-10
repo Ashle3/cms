@@ -1,5 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Document } from './document.model';
 import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
@@ -15,13 +16,43 @@ export class DocumentService {
   documents: Document[] = [];
   maxDocumentId: number;
 
-  constructor() { 
+  constructor(private http: HttpClient) { 
     this.documents = MOCKDOCUMENTS;
     this.maxDocumentId = this.getMaxId();
   }
 
+
   getDocuments(): Document[]{
-    return this.documents.slice();
+    this.http
+      .get('https://ab-cms-5ee91-default-rtdb.firebaseio.com/documents.json')
+      .subscribe(
+        //success
+        (documents: Document[])=>{
+          this.documents = documents;
+          this.maxDocumentId = this.getMaxId();
+          this.documents.sort((a, b) => { //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+            const nameA = a.name.toUpperCase();
+            const nameB = b.name.toUpperCase();
+            if (nameA < nameB){
+              return -1;
+            }
+            if (nameA > nameB){
+              return 1;
+            }
+
+            return 0;
+          });
+          let documentsListClone = this.documents.slice();
+          this.documentListChangedEvent.next(documentsListClone);
+        },
+
+        //error
+        // error => {
+        //   this.error.next(error.message)
+        // }
+        
+      );
+      return this.documents.slice();
   }
 
   getDocument(id: string): Document{
@@ -37,7 +68,8 @@ export class DocumentService {
       return;
     }
     this.documents.splice(pos, 1);
-    this.documentListChangedEvent.next(this.documents.slice());
+    // this.documentListChangedEvent.next(this.documents.slice());
+    this.storeDocuments();
   }
 
   updateDocument(originalDocument: Document, newDocument: Document){
@@ -52,8 +84,9 @@ export class DocumentService {
 
     newDocument.id = originalDocument.id;
     this.documents[pos] = newDocument;
-    let documentListClone = this.documents.slice();
-    this.documentListChangedEvent.next(documentListClone);
+    // let documentListClone = this.documents.slice();
+    // this.documentListChangedEvent.next(documentListClone);
+    this.storeDocuments();
   }
 
   getMaxId(): number {
@@ -77,7 +110,19 @@ export class DocumentService {
     this.maxDocumentId++;
     newDocument.id = this.maxDocumentId.toString();
     this.documents.push(newDocument);
-    let documentsListClone = this.documents.slice();
-    this.documentListChangedEvent.next(documentsListClone);
+    // let documentsListClone = this.documents.slice();
+    // this.documentListChangedEvent.next(documentsListClone);
+    this.storeDocuments();
+  }
+
+  storeDocuments() {
+    let arrayToText = JSON.parse(JSON.stringify(this.documents));
+    this.http.put('https://ab-cms-5ee91-default-rtdb.firebaseio.com/documents.json', arrayToText, {headers: new HttpHeaders({'Content-Type': 'application/json'})})
+      .subscribe(
+        () => {
+          let documentsListClone = this.documents.slice();
+          this.documentListChangedEvent.next(documentsListClone);
+        }
+      )
   }
 }
