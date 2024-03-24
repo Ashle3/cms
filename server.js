@@ -5,6 +5,7 @@ var http = require('http');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
 
 // import the routing file to handle the default (index) route //DEFINING
 var index = require('./server/routes/app');
@@ -13,6 +14,18 @@ const contactRoutes = require('./server/routes/contacts');
 const documentRoutes = require('./server/routes/documents');
 
 var app = express(); // create an instance of express
+
+mongoose.connect(
+  "mongodb+srv://ashleeb3:kWe5YcMzGJdRcOaN@cluster0.gvxcowv.mongodb.net/cms?retryWrites=true&w=majority&appName=Cluster0")
+  .then(() => {
+    console.log("Connected to database!");
+    app.listen(3000, () => {
+      console.log("Server is running on port 3000");
+    });
+  })
+  .catch(() => {
+    console.log("Connection failed.");
+  });
 
 // Tell express to use the following parsers for POST data
 app.use(bodyParser.json());
@@ -54,13 +67,13 @@ app.get('*', (req, res) => {
 });
 
 // Define the port address and tell express to use this port
-const port = process.env.PORT || '3000';
-app.set('port', port);
+// const port = process.env.PORT || '3000';
+// app.set('port', port);
 
 // Create HTTP server.
 const server = http.createServer(app);
 
 // Tell the server to start listening on the provided port
-server.listen(port, function() {
-  console.log('API running on localhost: ' + port)
-});
+// server.listen(port, function() {
+//   console.log('API running on localhost: ' + port)
+// });
